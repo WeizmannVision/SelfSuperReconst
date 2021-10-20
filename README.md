@@ -2,11 +2,12 @@
 # Self-Supervised RGBD Reconstruction from Brain Activity 🧠
 
 ***Official PyTorch implementation & pretrained models for:***
-> *"More than meets the eye: Self-supervised depth reconstruction from brain activity"*
+> *More than meets the eye: Self-supervised depth reconstruction from brain activity* \
 > Guy Gaziv, Michal Irani  [[`arXiv`](https://arxiv.org/abs/2106.05113)]
 
-> *"Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity"* 
-> Guy Gaziv*, Roman Beliy*, Niv Granot*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani [[`Project Page`](http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/) | [`arXiv`](https://arxiv.org/abs/2106.05113) | [`Summary Video`](https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550)]
+> *Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity* \
+> Guy Gaziv*, Roman Beliy*, Niv Granot*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani  \
+> [[`Project Page`](http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/) | [`arXiv`](https://arxiv.org/abs/2106.05113) | [`Summary Video`](https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550)]
 
 <div align="center">
   <img width="100%" alt="Summary" src=".github/summary.gif">
@@ -28,8 +29,7 @@ You can dismiss this step depending on your needs: (i) MiDaS is dynamically used
 If any of these is not required just comment out imports/relevant code parts.
 
 ####  Data
-This code requires all necessary data to be placed/linked under `data` folder in the following structure. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).**
-
+This code requires all necessary data to be placed/linked under `data` folder in the following structure. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
 **Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).**
 ```
 /data
