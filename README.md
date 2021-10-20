@@ -2,10 +2,10 @@
 # Self-Supervised RGBD Reconstruction from Brain Activity 🧠
 
 ***Official PyTorch implementation & pretrained models for:***
-> *More than meets the eye: Self-supervised depth reconstruction from brain activity* \
+> ***More than meets the eye: Self-supervised depth reconstruction from brain activity*** \
 > Guy Gaziv, Michal Irani  [[`arXiv`](https://arxiv.org/abs/2106.05113)]
 
-> *Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity* \
+> ***Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity*** \
 > Guy Gaziv*, Roman Beliy*, Niv Granot*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani  \
 > [[`Project Page`](http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/) | [`arXiv`](https://arxiv.org/abs/2106.05113) | [`Summary Video`](https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550)]
 
