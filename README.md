@@ -44,7 +44,7 @@ This code requires all necessary data to be placed/linked under `data` folder in
 ┃	┃	┗ (depth component of ImageNet validation images using MiDaS large model)
 
 ┣ 📂 imagenet_rgbd
-┃	┗	(pretrained depth-only & RGBD models optimized for ImageNet classification challenge; These are used as Encoder backbone net or as a reconstruction metric)
+┃	┗	(pretrained depth-only & RGBD vgg16/19 model checkpoints optimized for ImageNet classification challenge; These are used as Encoder backbone net or as a reconstruction metric)
 
 ┣ 📜 images_112.npz (fMRI on ImageNet stimuli at resolution 112x112)
 ┣ 📜 rgbd_112_from_224_large_png_uint8.npz (saved RGBD data at resolution 112, depth computed on 224 stimuli using MiDaS large model and saved as PNG uint8)
