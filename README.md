@@ -29,8 +29,15 @@ You can dismiss this step depending on your needs: (i) MiDaS is dynamically used
 If any of these is not required just comment out imports/relevant code parts.
 
 ####  Data
-This code requires all necessary data to be placed/linked under `data` folder in the following structure. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
-**Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).**
+This code requires all necessary data to be placed/linked under `data` folder in the structure below. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
+**Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).** \
+In addition, the original MiDaS depth estimation models ([model-f6b98070.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-f6b98070.pt)
+and [model-small-70d6b9c8.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-small-70d6b9c8.pt)) should be downloaded from the [MiDaS original repo](https://github.com/isl-org/MiDaS/releases/tag/v1) and placed under `data`. \
+For convenience the following script sets up all data automatically:
+```
+cd SelfSuperReconst
+./setup_data.sh
+```
 ```
 /data
 ┣ 📂 imagenet
@@ -51,8 +58,6 @@ This code requires all necessary data to be placed/linked under `data` folder in
 ┣ 📜 sbj_<X>.npz (fMRI data)
 ┗ 📜 model-<X>.pt (MiDaS depth estimation models)
 ```
-In addition, the original MiDaS depth estimation models ([model-f6b98070.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-f6b98070.pt)
-and [model-small-70d6b9c8.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-small-70d6b9c8.pt)) should be downloaded from the [MiDaS original repo](https://github.com/isl-org/MiDaS/releases/tag/v1) and placed under `data`.
 
 ##
 ### Training
