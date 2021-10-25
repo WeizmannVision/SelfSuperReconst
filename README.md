@@ -33,7 +33,7 @@ This code requires all necessary data to be placed/linked under `data` folder in
 **Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).** \
 In addition, the original MiDaS depth estimation models ([model-f6b98070.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-f6b98070.pt)
 and [model-small-70d6b9c8.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-small-70d6b9c8.pt)) should be downloaded from the [MiDaS original repo](https://github.com/isl-org/MiDaS/releases/tag/v1) and placed under `data`. \
-For convenience the following script sets up all data automatically:
+**For convenience the following script sets up all data automatically (takes some time to download):**
 ```
 cd SelfSuperReconst
 ./setup_data.sh
