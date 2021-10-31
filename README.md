@@ -84,6 +84,10 @@ The results (reconstructions of train and test images) will appear under `result
 #### Example 3 (RGBD):
 `python $(scripts/train_enc_rgbd.sh)` followed by `python $(scripts/train_dec_rgbd.sh)`
 
+<div align="left">
+  <img width="60%" alt="Tensorboard Logs" src=".github/tensorboard_logs.png">
+</div>
+
 ##
 ### Evaluation
 The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper).
