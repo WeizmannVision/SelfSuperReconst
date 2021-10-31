@@ -18,6 +18,7 @@
 #### Code & environment
 Clone this repo and create a designated conda environment using the `env.yml` file:
 ```
+cd SelfSuperReconst
 conda env create --name <envname> --file=env.yml
 conda activate <envname>
 ```
