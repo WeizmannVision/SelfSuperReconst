@@ -64,7 +64,7 @@ cd SelfSuperReconst
 ### Training
 The `scripts` folder provides most of the basic utility and experiments. In a nutshell, the training is comprised of two phases: (i) Encoder training implemented in `train_encoder.py`, followed by (ii) Decoder training, implemented in `train_decoder.py`. 
 Each of those scripts need be run with the relevant flags which are listed in config files. General flags for both Encoder & Decoder training are listed in `config.py`, and Encoder/Decoder-training specific flags in `config_enc.py` or `config_dec.py`, respectively. \
-Make sure to set the `tensorboard_log_dir` and `gpu` variables within the scripts.
+**Make sure to set the `tensorboard_log_dir` and `gpu` variables within the scripts**.
 
 #### Example 1 (RGB-only):
 Train RGB-only Encoder (supervised-only):
