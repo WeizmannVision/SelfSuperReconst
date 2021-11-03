@@ -64,7 +64,7 @@ cd SelfSuperReconst
 ### Training
 The `scripts` folder provides most of the basic utility and experiments. In a nutshell, the training is comprised of two phases: (i) Encoder training implemented in `train_encoder.py`, followed by (ii) Decoder training, implemented in `train_decoder.py`. 
 Each of those scripts need be run with the relevant flags which are listed in config files. General flags for both Encoder & Decoder training are listed in `config.py`, and Encoder/Decoder-training specific flags in `config_enc.py` or `config_dec.py`, respectively. \
-**Make sure to set the `tensorboard_log_dir` and `gpu` variables within the scripts**.
+Make sure to set the `tensorboard_log_dir` and `gpu` variables within the scripts.
 
 #### Example 1 (RGB-only):
 Train RGB-only Encoder (supervised-only):
@@ -89,8 +89,8 @@ The results (reconstructions of train and test images) will appear under `result
 </div>
 
 ##
-### Evaluation
-The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper).
+### Evaluation [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/WeizmannVision/SelfSuperReconst/blob/main/eval.ipynb)
+The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper). 
 The DataFrame with evaluation results is saved under `eval_results` folder as a `.pkl` file. 
 The `eval_plot.ipynb` loads these data and implements some basic visualization and printing of results.
 
