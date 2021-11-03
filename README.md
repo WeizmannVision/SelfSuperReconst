@@ -89,7 +89,7 @@ The results (reconstructions of train and test images) will appear under `result
 </div>
 
 ##
-### Evaluation [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/WeizmannVision/SelfSuperReconst/blob/main/eval.ipynb)
+### Evaluation [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/WeizmannVision/SelfSuperReconst/blob/main/eval.ipynb)
 The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper). 
 The DataFrame with evaluation results is saved under `eval_results` folder as a `.pkl` file. 
 The `eval_plot.ipynb` loads these data and implements some basic visualization and printing of results.
