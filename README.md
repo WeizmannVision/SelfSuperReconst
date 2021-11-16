@@ -99,7 +99,7 @@ The `eval_plot.ipynb` loads these data and implements some basic visualization a
 If you find this repository useful, please consider giving a star ⭐️ and citation:
 ```
 @article{Gaziv2021MoreActivity, 
-	title = {{More than meets the eye: Self-supervised depth reconstruction from brain activity}}, 
+	title = {{More than Meets The Eye: Self-Supervised Depth Reconstruction from Brain Activity}}, 
 	author = {Gaziv, Guy and Irani, Michal}, 
 	journal={arXiv preprint arXiv:2106.05113},	
 	year = {2021}
