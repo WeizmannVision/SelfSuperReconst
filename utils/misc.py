@@ -127,6 +127,8 @@ def fc_heatmap_mask(optimizer):
     return plt.gcf()
 
 def my_hist_comparison_fig(data, nbins):
+    # For robustness to matplotlib bug:
+    data = {k: torch.stack(v).numpy() for k, v in data.items()}
     return hist_comparison_fig(data, np.linspace(-1.2, 1.2, nbins))
 
 def set_gpu():
