@@ -38,7 +38,7 @@ def main(argv):
 
     global voxel_nc, N_VOXELS
     N_VOXELS = train.n_voxels
-    
+
     voxel_nc = val.get_voxel_score('noise_ceil')
 
     voxel_indices_nc_sort = np.argsort(voxel_nc)[::-1]
@@ -59,19 +59,19 @@ def main(argv):
             normalizer = norm_depth_img
     else:
         normalizer = NormalizeImageNet()
-    
+
     img_xfm_basic = transforms.Compose([
-        transforms.Resize(size=im_res(), interpolation=Image.BILINEAR), 
-        transforms.CenterCrop(im_res()), 
-        transforms.ToTensor(), 
-        normalizer  
-        ])  
+        transforms.Resize(size=im_res(), interpolation=Image.BILINEAR),
+        transforms.CenterCrop(im_res()),
+        transforms.ToTensor(),
+        normalizer
+        ])
 
     img_xfm_train = transforms.Compose([
         transforms.Resize(size=im_res(), interpolation=Image.BILINEAR),
         transforms.RandomCrop(size=im_res(), padding=int(FLAGS.random_crop_pad_percent / 100 * im_res()), padding_mode='edge'),
         transforms.ToTensor(),
-        normalizer 
+        normalizer
     ])
 
     model = model.cuda()
@@ -94,14 +94,14 @@ def main(argv):
 
     if FLAGS.train_bbn:
         optimizer = optim.Adam([
-            {'params': trainable_params0}, 
+            {'params': trainable_params0},
             {'params': model.multi_branch_bbn.parameters(), 'lr': 1e-6}
             ], lr=FLAGS.learning_rate)
     else:
         optimizer = optim.Adam(trainable_params, lr=FLAGS.learning_rate)
 
     model = nn.DataParallel(model)
-    if FLAGS.init_cpt_name:    
+    if FLAGS.init_cpt_name:
         # Load pretrained encoder
         assert os.path.isfile(init_cpt_path())
         print('\t==> Loading checkpoint {}'.format(basename(init_cpt_path())))
@@ -125,7 +125,7 @@ def main(argv):
         dd = out_shape[-1]
         xx, yy = torch.tensor(np.expand_dims(np.mgrid[:dd, :dd], axis=1).repeat(N_VOXELS, axis=1), dtype=torch.float32, requires_grad=False).cuda()
         xx_list.append(xx); yy_list.append(yy)
-    
+
     def group_reg(reg_type='fcmom2'):
         if FLAGS.separable:
             loss_list = []
@@ -140,13 +140,13 @@ def main(argv):
                     Wsq_pad = F.pad(W_sub.unsqueeze(1)**2, [1, 1, 1, 1], mode='reflect').squeeze()
                     reg_l1 = 5e-6
                     reg_gl = 1e-5
-                    
-                    Wn = (Wsq_pad[..., :-2, 1:-1] + Wsq_pad[...,2:, 1:-1] + Wsq_pad[...,1:-1, :-2] + Wsq_pad[..., 1:-1, 2:])/4 
+
+                    Wn = (Wsq_pad[..., :-2, 1:-1] + Wsq_pad[...,2:, 1:-1] + Wsq_pad[...,1:-1, :-2] + Wsq_pad[..., 1:-1, 2:])/4
                     reg_loss = reg_l1 * W_sub.abs().sum() + reg_gl * Wn.sqrt().sum()
                     loss_list.append(reg_loss)
                 else:
                     raise NotImplementedError
-            return torch.stack(loss_list).sum(0)    
+            return torch.stack(loss_list).sum(0)
         elif isinstance(model.module.fc_head, EncFCFWRF):
             W = model.module.fc_head.rf**2
         else:
@@ -171,7 +171,7 @@ def main(argv):
                 else:
                     raise NotImplementedError
             return torch.stack(loss_list).sum(0)
-        
+
     if FLAGS.separable:
         reg_loss_dict = {
             'L1reg_convs': (FLAGS.l1_convs, lambda : sum([param.abs().sum() for param in chained([m.parameters() for m in model.modules() if isinstance(m, nn.Conv2d)]) if param.ndim == 4])),
@@ -203,7 +203,7 @@ def main(argv):
         else:
             cprintm('(+) Using scheduler: {} every {} epochs.'.format(FLAGS.gamma, FLAGS.scheduler))
             scheduler = optim.lr_scheduler.StepLR(optimizer, FLAGS.scheduler, gamma=FLAGS.gamma)
-    
+
     # Loss
     criterion = lambda pred, actual: FLAGS.mse_loss * F.mse_loss(pred, actual) + FLAGS.cos_loss * cosine_loss(pred, actual)
 
@@ -221,7 +221,7 @@ def main(argv):
 
                 _, _, voxel_pearson_r_avg, collected_fmri = \
                     train_test_regress(trainloader, model, criterion, optimizer, reg_loss_dict=reg_loss_dict, sum_writer=sum_writer)
-                
+
 
                 if FLAGS.pw_corr_win:
                     voxel_pearson_r_pw = pearson_corr_piecewise(*collected_fmri.values(), win_size=FLAGS.pw_corr_win)
@@ -246,13 +246,13 @@ def main(argv):
                             else:
                                 rf_params, n_out_planes = list(model.module.fc_head[0].parameters()), model.module.n_out_planes
                             sum_writer.add_figure(
-                
+
                                 'TrainEnc/EpochVoxRF', vox_rf(rf_params, n_out_planes, voxel_indices_nc_sort, mask=isinstance(model.module.fc_head, EncFCFWRF)), epoch)
-                
-                        sum_writer.add_figure('ValEnc/OutDist', my_hist_comparison_fig(collected_test, 100), epoch)
+
+                        sum_writer.add_figure('ValEnc/OutDist', my_hist_comparison_fig(stack2numpy(collected_test), 100), epoch)
                         sum_writer.add_figure('ValEnc/Vox_Corr_vs_NC', corr_vs_corr_plot(voxel_nc, voxel_pearson_r_avg), epoch)
 
-                
+
                     for metric_name, meter_avg in meters_test:
                         sum_writer.add_scalar('ValEnc/{}'.format(metric_name), meter_avg, epoch)
 
@@ -320,7 +320,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
 
             fmri_actual = fmri_actual.cuda()
             images = images.cuda()
-            
+
             with dummy_context_mgr() if optimizer else torch.no_grad():
                 fmri_pred = model(images, detach_bbn=FLAGS.allow_bbn_detach)
 
@@ -328,7 +328,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
             losses['criterion'].update(loss_criterion.data, fmri_actual.size(0))
             losses['mae'].update(F.l1_loss(fmri_pred, fmri_actual).data, fmri_actual.size(0))
             losses['cosine_loss'].update(cosine_loss(fmri_pred, fmri_actual).data, fmri_actual.size(0))
-            
+
             reg_loss_tot = 0
             for loss_name, (w, reg_loss_func) in reg_loss_dict.items():
                 reg_loss = reg_loss_func()
@@ -336,7 +336,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
                 if callable(w):
                     w = w(global_step)
                 reg_loss_tot += w * reg_loss
-            
+
             loss = loss_criterion + reg_loss_tot
 
             losses['total'].update(loss.data, fmri_actual.size(0))
@@ -344,7 +344,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
             voxel_pearson_r.update(pearson_corr(fmri_pred.data, fmri_actual.data).cpu().numpy())
             for (metric_func, _), meter in corrs.items():
                 meter.update(metric_func(voxel_pearson_r.val), fmri_actual.size(0))
-    
+
             voxel_pearson_r_ncnorm = voxel_pearson_r.val / voxel_nc
 
             for (metric_func, _), meter in corrs_nc_norm.items():
@@ -360,7 +360,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
 
             if optimizer:
                 model.zero_grad()
-                
+
                 loss.backward()
                 optimizer.step()
                 global_step += 1
@@ -374,7 +374,7 @@ def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={
 
                     if FLAGS.sum_level > 4:
                         if (global_step - 1) % 5 == 0:
-                            fig = hist_comparison_fig({'actual': actual_fmri_list, 'pred': pred_fmri_list}, linspace(-2.5, 2.5, 100))
+                            fig = hist_comparison_fig(stack2numpy({'actual': actual_fmri_list, 'pred': pred_fmri_list}), linspace(-2.5, 2.5, 100))
                             sum_writer.add_figure('TrainEnc/BatchDist', fig, global_step)
 
 

@@ -39,7 +39,7 @@ def main(argv):
     val_labeled = KamitaniDataset(FLAGS.roi, sbj_num=FLAGS.sbj_num, fmri_xfm=fmri_xfm, subset_case=KamitaniDataset.TEST, test_avg_qntl=FLAGS.test_avg_qntl, select_voxels=FLAGS.select_voxels, is_rgbd=FLAGS.is_rgbd)
 
     train_unlabeled_fmri = UnlabeledDataset(val_labeled, return_tup_index=-1)
-    
+
     if FLAGS.is_rgbd:
         external_images = RGBD_Dataset(depth_only=FLAGS.is_rgbd==2)
     else:
@@ -66,12 +66,12 @@ def main(argv):
                 img_xfm_norm = norm_batch_within_img
             else:
                 img_xfm_norm = NormalizeBatch([0.461], [0.305])
-        
+
     else:
         img_xfm_norm = norm_batch_imagenet
-        
+
     img_xfm_norm_inv = identity
-    
+
     #########################################
 
     global voxel_nc
@@ -81,7 +81,7 @@ def main(argv):
     voxel_snr_scaled = torch.tensor(voxel_snr / voxel_snr.mean()).cuda()
     voxel_snr_inv = 1 / voxel_snr
     voxel_snr_inv_scaled = torch.tensor(voxel_snr_inv / voxel_snr_inv.mean()).cuda()
-    
+
     cprintm(u'(*) n_voxels: {} | noise ceiling {:.2f} \u00B1 {:.2f} (Mean \u00B1 SD)'.format(n_voxels, voxel_nc.mean(), voxel_nc.std()))
 
     if FLAGS.separable:
@@ -90,7 +90,7 @@ def main(argv):
     else:
         # N.B. not yet supports RGBD
         enc = make_model('BaseEncoderVGG19ml', n_voxels, FLAGS.random_crop_pad_percent, drop_rate=0.25)
-    
+
     if FLAGS.is_rgbd and not FLAGS.midas_dec:
         if FLAGS.is_rgbd == 1 and not FLAGS.depth_dec:  # RGBD
             n_chan_dec_output = 4
@@ -104,10 +104,10 @@ def main(argv):
     else:
         depth_extractor_dec = None
 
-    dec = make_model('BaseDecoder', n_voxels, im_res(), start_CHW=(64, 14, 14), n_conv_layers_ramp=FLAGS.n_conv_layers, n_chan=64, 
+    dec = make_model('BaseDecoder', n_voxels, im_res(), start_CHW=(64, 14, 14), n_conv_layers_ramp=FLAGS.n_conv_layers, n_chan=64,
         n_chan_output=n_chan_dec_output, depth_extractor=depth_extractor_dec)
 
-    train_labeled = CustomDataset(train_labeled, input_xfm=img_xfm_basic)  
+    train_labeled = CustomDataset(train_labeled, input_xfm=img_xfm_basic)
     val_labeled_avg = CustomDataset(val_labeled_avg, input_xfm=img_xfm_basic)
     val_labeled = CustomDataset(val_labeled, input_xfm=img_xfm_basic)
     external_images = CustomDataset(external_images, input_xfm=img_xfm_basic)
@@ -118,7 +118,7 @@ def main(argv):
             img_loss_xfm_norm = norm_imagenet_norm_depth_img_batch
         else:
             img_loss_xfm_norm = NormalizeBatch([0.485, 0.456, 0.406, 0.461], [0.229, 0.224, 0.225, 0.305])
-    
+
         data_norm_factors_images = UnlabeledDataset(CustomDataset(KamitaniDataset(FLAGS.roi, im_res=FLAGS.im_res, subset_case=KamitaniDataset.TRAIN, is_rgbd=1), input_xfm=img_xfm_basic), 0)
     elif FLAGS.depth_dec:
         if FLAGS.norm_within_img:
@@ -126,7 +126,7 @@ def main(argv):
         else:
             img_loss_xfm_norm = NormalizeBatch([0.461], [0.305])
         data_norm_factors_images = UnlabeledDataset(CustomDataset(KamitaniDataset(FLAGS.roi, im_res=FLAGS.im_res, subset_case=KamitaniDataset.TRAIN, is_rgbd=2), input_xfm=img_xfm_basic), 0)
-        
+
     else:
         data_norm_factors_images = UnlabeledDataset(train_labeled, 0)
 
@@ -136,7 +136,7 @@ def main(argv):
     }
     main_branch = ['_features.{}'.format(i) for i in range(30)]
     feats_extractor = MultiBranch(pm.vgg16(), {'conv5-3': main_branch[-1]}, main_branch, spatial_out_dims=None)
-    
+
     if FLAGS.depth_from_rgb:
         if FLAGS.midas_loss:
             depth_extractor = criterions_dict['image'].depth_extractor
@@ -154,7 +154,7 @@ def main(argv):
     if FLAGS.decay > 0:
         cprintm('(+) {} weight decay.'.format(FLAGS.decay))
     optimizer = optim.Adam(trainable_params, lr=FLAGS.learning_rate, amsgrad=True)
-    
+
     scheduler = None
     if FLAGS.scheduler > 0:
         if FLAGS.scheduler == 1:
@@ -171,7 +171,7 @@ def main(argv):
 
     enc.cuda()
     dec.cuda()
-        
+
     dec = nn.DataParallel(dec)
     cudnn.benchmark = True
 
@@ -181,18 +181,18 @@ def main(argv):
         assert os.path.isfile(enc_cpt_path())
         print('\t==> Loading checkpoint {}'.format(os.path.basename(enc_cpt_path())))
         enc.load_state_dict(torch.load(enc_cpt_path())['state_dict'])
-        
+
     data_loaders_labeled = {
         'train': data.DataLoader(train_labeled, batch_size=min(batch_size_list()[0], len(train_labeled)), shuffle=True, num_workers=num_workers(), pin_memory=True),
         'test': data.DataLoader(val_labeled_avg, batch_size=min(batch_size_list()[-1], len(val_labeled_avg)), shuffle=False, num_workers=num_workers(), pin_memory=True),
     }
-    
+
     # Loss
     # Regularization
     reg_loss_dict = {}
     tau = 800.
     m = 1/8000.
-    
+
     W = list(dec.module.input_fc.parameters())[0].T
     dd = int(np.sqrt(W.view(len(W), dec.module.start_CHW[0], -1).shape[-1]))
     xx, yy = torch.tensor(np.expand_dims(np.mgrid[:dd, :dd], axis=1).repeat(len(W), axis=1), dtype=torch.float32, requires_grad=False).cuda()
@@ -210,7 +210,7 @@ def main(argv):
         elif reg_type=='gl':
             Wsq_pad = F.pad(W**2, [1, 1, 1, 1], mode='reflect')
             n_reg = .5
-        
+
             reg_l1 = FLAGS.gl_l1; reg_gl = FLAGS.gl_gl
             Wn = (W**2 + n_reg / 8 * (Wsq_pad[..., :-2, 1:-1] + Wsq_pad[...,2:, 1:-1] + Wsq_pad[...,1:-1, :-2] + Wsq_pad[..., 1:-1, 2:] +
                                       Wsq_pad[..., :-2, :-2] + Wsq_pad[...,2:, 2:] + Wsq_pad[...,2:, :-2] + Wsq_pad[..., :-2, 2:])) / (1 + n_reg)
@@ -227,11 +227,11 @@ def main(argv):
         'mom2': (FLAGS.fc_mom2, lambda : group_reg('fcmom2')),
         'gl': (FLAGS.fc_gl, lambda : group_reg('gl')),
     }
-    
+
     for reg_loss_name, (w, _) in reg_loss_dict.items():
         if callable(w) or w > 0:
             cprintm('(+) {} {} loss.'.format(w, reg_loss_name))
-    
+
     # Training
     print('\n' + '#'*100 + '\n')
     cprintm('\t** Training config {} **'.format(FLAGS.config_train))
@@ -250,8 +250,8 @@ def main(argv):
                 if sum_writer:
                     if epoch % 50 == 0 or (epoch % 2 == 0 and epoch in range(10)):
                         domain = np.linspace(0, 1, 100)
-                        
-                        sum_writer.add_figure('TrainDec/ImagesOutDist', hist_comparison_fig(collected_images, domain), epoch)
+
+                        sum_writer.add_figure('TrainDec/ImagesOutDist', hist_comparison_fig(stack2numpy(collected_images), domain), epoch)
 
                         create_reconst_summary(enc, dec, data_loaders_labeled, train_labeled, epoch, img_xfm_norm_inv, sum_writer, depth_extractor)
 
@@ -268,10 +268,10 @@ def main(argv):
 
                     for metric_name, meter_avg in meters_test:
                         if any(s in metric_name for s in ['LossD', 'LossCriteria', 'LossTotal']):
-                            sum_writer.add_scalar('ValDec/{}'.format(metric_name), meter_avg, epoch)                       
+                            sum_writer.add_scalar('ValDec/{}'.format(metric_name), meter_avg, epoch)
 
                 test_loss = train_loss
-                
+
                 if scheduler:
                     if isinstance(scheduler, optim.lr_scheduler.ReduceLROnPlateau):
                         scheduler.step(test_loss)
@@ -282,7 +282,7 @@ def main(argv):
                 is_best = test_loss < best_loss
                 best_loss = min(test_loss, best_loss)
                 if FLAGS.may_save:
-                    if is_best or not FLAGS.savebestonly:    
+                    if is_best or not FLAGS.savebestonly:
                         save_checkpoint({
                             'epoch': epoch + 1,
                             'state_dict': dec.state_dict(),
@@ -299,7 +299,7 @@ def main(argv):
     for index, image_tensor in enumerate(image_D_sbs_gt_train):
         if len(image_tensor) >= 3:
             save_image(image_tensor[:3], pjoin(out_folder, str(index) + '.png'))
-        if len(image_tensor) == 4 or len(image_tensor) == 1:  
+        if len(image_tensor) == 4 or len(image_tensor) == 1:
             if len(image_tensor) == 4: # RGBD
                 image_tensor_depth = image_tensor[3]
             else:  # Depth only
@@ -311,7 +311,7 @@ def main(argv):
     for index, image_tensor in enumerate(image_D_sbs_gt_test):
         if len(image_tensor) >= 3:
             save_image(image_tensor[:3], pjoin(out_folder, str(index) + '.png'))
-        if len(image_tensor) == 4 or len(image_tensor) == 1:  
+        if len(image_tensor) == 4 or len(image_tensor) == 1:
             if len(image_tensor) == 4: # RGBD
                 image_tensor_depth = image_tensor[3]
             else:  # Depth only
@@ -327,17 +327,17 @@ def main(argv):
 def sample_pixels(imgs):
     indices = np.linspace(0, im_res()-1, im_res()//4, dtype='int')
     return imgs[:5, 0, indices, indices].cpu().detach().flatten().squeeze()
-    
+
 def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=None, external_images=None, enc=None, optimizer=None, reg_loss_dict={}, sum_writer=None):
     global global_step
     if optimizer:
         mode = 'Train'
-        enc.eval(); 
+        enc.eval();
         dec.train()
     else:
         mode = 'Val'
         if enc:
-            enc.eval(); 
+            enc.eval();
         dec.eval()
 
     batch_time = AverageMeter()
@@ -362,7 +362,7 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
     main_loader = data_loader_labeled
     if len(main_loader) < 6:
         k_batch_collect = 1
-    else: 
+    else:
         k_batch_collect = int(len(main_loader) // 6)
     with tqdm(desc=mode, total=len(main_loader)) if FLAGS.verbose > 0 else dummy_context_mgr() as bar:
         for batch_idx, (images_gt, fmri_gt) in enumerate(main_loader):
@@ -370,7 +370,7 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
                 unlabeled_fmri = next(train_loaders_unlabeled_it['fmri'], None)
                 if unlabeled_fmri is None:
                     train_loaders_unlabeled_it['fmri'] = iter(data.DataLoader(train_unlabeled_fmri, batch_size=min(batch_size_list()[1], len(train_unlabeled_fmri)),
-                                                            shuffle=True, num_workers=num_workers(), pin_memory=False))                                
+                                                            shuffle=True, num_workers=num_workers(), pin_memory=False))
                     unlabeled_fmri = next(train_loaders_unlabeled_it['fmri'])
 
                 unlabeled_images, _ = next(train_loaders_unlabeled_it['images'], None)
@@ -417,13 +417,13 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
                 loss_ED_list = criterions_dict['image'](images_ED, unlabeled_images)
                 loss_ED = sum(tup2list(loss_ED_list, 1))
                 losses['ED'].update(loss_ED.data)
-                
+
                 loss_DE = criterions_dict['fmri'](fmri_DE, unlabeled_fmri)
                 losses['DE'].update(loss_DE.data)
-                
+
             loss_criteria += sum([float(w) * l for w, l in zip(FLAGS.loss_weights, [loss_D, loss_ED, loss_DE])])
             losses['criteria'].update(loss_criteria.data)
-            
+
             reg_loss_tot = 0
             for loss_name, (w, reg_loss_func) in reg_loss_dict.items():
                 reg_loss = reg_loss_func()
@@ -431,9 +431,9 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
                 if callable(w):
                     w = w(global_step)
                 reg_loss_tot += w * reg_loss
-            
+
             loss = loss_criteria + reg_loss_tot
-            
+
             losses['total'].update(loss.data)
 
             if batch_idx % k_batch_collect == 0:
@@ -441,7 +441,7 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
                     if FLAGS.sum_level > 4 or not optimizer:
                         pred_images_list = list(sample_pixels(images_D))
                         collected_images['pred'].extend(pred_images_list)
-                        
+
             if optimizer:
                 criterions_dict['image'].zero_grad()
                 dec.zero_grad()
@@ -452,14 +452,14 @@ def train_test(data_loader_labeled, dec, criterions_dict, train_unlabeled_fmri=N
                 if sum_writer:
                     for loss_name, meter in losses.items():
                         sum_writer.add_scalar('TrainDec/Loss{}'.format(loss_name.capitalize()), meter.val, global_step)
-                    
+
                     if FLAGS.sum_level > 5:
                         for loss_name, loss_val in loss_D_list:
                             sum_writer.add_scalar('ImageLossD/{}'.format(loss_name.capitalize()), loss_val, global_step)
 
                         for loss_name, loss_val in loss_ED_list:
                             sum_writer.add_scalar('ImageLossED/{}'.format(loss_name.capitalize()), loss_val, global_step)
-                            
+
             # measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()

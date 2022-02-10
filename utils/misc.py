@@ -65,7 +65,7 @@ def save_checkpoint(state, is_best=False, checkpoint='checkpoint', filename='che
 
 class SummaryWriter(SumWr):
     def __init__(self, comment):
-        current_time = datetime.now().strftime('%b%-d_%-H-%M') 
+        current_time = datetime.now().strftime('%b%-d_%-H-%M')
         return super(SummaryWriter, self).__init__(log_dir=os.path.join(FLAGS.tensorboard_log_dir, '_'.join([current_time, FLAGS.exp_prefix, comment])))
 
 def beta_fig(optimizer):
@@ -90,7 +90,7 @@ def draw_heatmap(*args, **kwargs):
     d = data.pivot(index=args[0], columns=args[1], values=args[2])
     try:
         sns.heatmap(d, **kwargs)
-    except ValueError:  
+    except ValueError:
         pass
 
 def vox_rf(fc_params, n_out_planes, voxel_indices_nc_sort, dec_fc=False, mask=False):
@@ -127,9 +127,10 @@ def fc_heatmap_mask(optimizer):
     return plt.gcf()
 
 def my_hist_comparison_fig(data, nbins):
-    # For robustness to matplotlib bug:
-    data = {k: torch.stack(v).numpy() for k, v in data.items()}
     return hist_comparison_fig(data, np.linspace(-1.2, 1.2, nbins))
+
+def stack2numpy(data_dict):
+    return {k: torch.stack(v).numpy() for k, v in data_dict.items()}
 
 def set_gpu():
     os.environ['CUDA_VISIBLE_DEVICES'] = ', '.join(FLAGS.gpu)
@@ -144,7 +145,7 @@ def corr_vs_corr_plot(corr_x, corr_y, ax_labels=None):
     return plt.gcf()
 
 def norm_depth_01(depth):
-    # Normalize to 0-1. 
+    # Normalize to 0-1.
     # depth is NxHxW
     depth_min = depth.view(*depth.shape[:-2], -1).min(-1).values[:, None, None]
     depth_max = depth.view(*depth.shape[:-2], -1).max(-1).values[:, None, None]
@@ -161,11 +162,11 @@ def reconst_sbs(dec, data_loader, img_xfm_norm_inv, depth_extractor=None):
             [tensor_transform(torch.cat(chunk_list, dim=0), img_xfm_norm_inv)
              for chunk_list in zip(*[(images_gt, dec(fmri_gt.cuda()).cpu().detach())
                                      for (images_gt, fmri_gt) in data_loader])]
-        
+
         assert not torch.isnan(images_D).any(), 'nans in images_D.'
         # Bring GT images to same scales as the reconstructed
         images_gt_interp = interpolate(images_gt, size=images_D.size(-1), mode='bilinear')
-       
+
         if depth_extractor:
             def get_depth(images):
                 depth = depth_extractor(images.cuda()).cpu().detach()
@@ -188,7 +189,7 @@ def interpolate(x, **kwargs):
     """ Protect from Bicubic cases where pytorch gives a bug for similar in/out sizes. """
     if x is None:
         return None
-    x_interp = F.interpolate(x, **kwargs) 
+    x_interp = F.interpolate(x, **kwargs)
     if x_interp.shape[-2:] == x.shape[-2:]:
         return x
     else:
@@ -197,30 +198,30 @@ def interpolate(x, **kwargs):
 def gray2color(gray_tensor_HW, map_name='inferno'):
     map_name = 'jet'
     return to_tensor(cm.get_cmap(map_name)(gray_tensor_HW.numpy())[...,:3])
-    
+
 def create_reconst_summary(enc, dec, data_loaders_labeled, train_labeled, epoch, img_xfm_norm_inv, sum_writer, depth_extractor=None):
     enc.eval(); dec.eval()
     image_D_sbs_gt_train = reconst_sbs(
-        dec, [(img_tensor.unsqueeze(0), torch.from_numpy(fmri)) for i, (img_tensor, fmri) in enumerate(train_labeled) if i in FLAGS.train_montage_indices], img_xfm_norm_inv, 
+        dec, [(img_tensor.unsqueeze(0), torch.from_numpy(fmri)) for i, (img_tensor, fmri) in enumerate(train_labeled) if i in FLAGS.train_montage_indices], img_xfm_norm_inv,
         depth_extractor)
     # NxCxHxW
     if sum_writer:
         grid_img = make_grid(image_D_sbs_gt_train, nrow=5, padding=3)
         if len(image_D_sbs_gt_train[0]) >= 3:
             sum_writer.add_image('TestDec/TrainReconst', grid_img[:3], epoch)
-        if len(grid_img) == 4 or len(image_D_sbs_gt_train[0]) == 1:  
+        if len(grid_img) == 4 or len(image_D_sbs_gt_train[0]) == 1:
             if len(grid_img) == 4: # RGBD
                 grid_img_depth = grid_img[3]
             else:  # Depth only
                 grid_img_depth = grid_img[0]
             sum_writer.add_image('TestDec/TrainReconstDepth', gray2color(grid_img_depth), epoch)
-    
+
     image_D_sbs_gt_test = reconst_sbs(dec, data_loaders_labeled['test'], img_xfm_norm_inv, depth_extractor)
     if sum_writer:
         grid_img = make_grid(image_D_sbs_gt_test, nrow=5, padding=3)
         if len(image_D_sbs_gt_test[0]) >= 3:
             sum_writer.add_image('TestDec/Reconst', grid_img[:3], epoch)
-        if len(grid_img) == 4 or len(image_D_sbs_gt_test[0]) == 1:  
+        if len(grid_img) == 4 or len(image_D_sbs_gt_test[0]) == 1:
             if len(grid_img) == 4: # RGBD
                 grid_img_depth = grid_img[3]
             else:  # Depth only
@@ -230,7 +231,7 @@ def create_reconst_summary(enc, dec, data_loaders_labeled, train_labeled, epoch,
     return image_D_sbs_gt_train, image_D_sbs_gt_test
 
 def extract_patches(x, patch_size):
-    patches = x.unfold(2, patch_size, 1).unfold(3, patch_size, 1)  
+    patches = x.unfold(2, patch_size, 1).unfold(3, patch_size, 1)
     # Permute so that channels are next to patch dimension
     patches = patches.permute(0, 2, 3, 1, 4, 5).contiguous()  # [128, 32, 32, 16, 3, 3]
     # View as [batch_size, height, width, channels*kh*kw]
@@ -241,7 +242,7 @@ def extract_patches(x, patch_size):
 
 def tup2list(tuple_list, tuple_idx):
     return list(zip(*tuple_list))[tuple_idx]
-    
+
 def chained(l):
     return list(itertools.chain(*l))
 
@@ -302,7 +303,7 @@ def hw_flatten(tensor):
 
 def batch_flat(tensor):
     return tensor.view(len(tensor), -1)
-    
+
 def sample_portion(x, q):
     return x[np.random.permutation(len(x))[:int(len(x) * q)]]
 
@@ -329,6 +330,6 @@ def overridefolder(folder_path):
     silentremove(folder_path)
     os.makedirs(folder_path)
     return folder_path
-    
+
 if __name__ == '__main__':
     pass
