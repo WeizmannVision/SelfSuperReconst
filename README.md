@@ -15,7 +15,7 @@
 
 ##
 ### Setup
-#### Code & environment
+### Code & environment
 Clone this repo and create a designated conda environment using the `env.yml` file:
 ```
 cd SelfSuperReconst
@@ -23,13 +23,13 @@ conda env create --name <envname> --file=env.yml
 conda activate <envname>
 ```
 
-#### Additional repo dependencies
+### Additional repo dependencies
 This repo uses two additional repos: (i) [MiDaS Monocular Depth Estimation](https://github.com/isl-org/MiDaS/releases/tag/v1), and (ii) [Perceptual Similarity Metric](https://github.com/richzhang/PerceptualSimilarity).
 Clone these repos and place under the parent folder of this repo. Imports to code from there are made accordingly.
 You can dismiss this step depending on your needs: (i) MiDaS is dynamically used to estimate depth from RGB data on-the-fly either as part of inference or reconstruction criterion (`midas_loss`) -- but not necessarily, depending on your decoder training configuration. (ii) lpips is used to evaluate RGB reconstructions.
 If any of these is not required just comment out imports/relevant code parts.
 
-####  Data
+###  Data
 This code requires all necessary data to be placed/linked under `data` folder in the structure below. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
 **Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).** \
 In addition, the original MiDaS depth estimation models ([model-f6b98070.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-f6b98070.pt)
