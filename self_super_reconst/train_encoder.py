@@ -15,10 +15,10 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 import pretrainedmodels as pm
 import pretrainedmodels.utils as pmutils
-from utils import *
-from config_enc import *
+from self_super_reconst.utils import *
+from self_super_reconst.config_enc import *
 from absl import app
-from utils.misc import set_gpu
+from self_super_reconst.utils.misc import set_gpu
 np.seterr(divide='ignore', invalid='ignore')
 
 def main(argv):
@@ -279,7 +279,7 @@ def main(argv):
         # Report
         cprintm('    * TRAINING COMPLETE *')
     cprint1(FLAGS.exp_prefix)
-    with open("runs/{}.txt".format(FLAGS.exp_prefix), "w") as f:
+    with open(f'{PROJECT_ROOT}/runs/{FLAGS.exp_prefix}.txt', 'w') as f:
         f.write(FLAGS.flags_into_string())
 
 def train_test_regress(loader, model, criterion, optimizer=None, reg_loss_dict={},  sum_writer=None):

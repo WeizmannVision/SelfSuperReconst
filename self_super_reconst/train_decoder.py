@@ -16,10 +16,10 @@ import torchvision.transforms as transforms
 from torchvision.utils import make_grid, save_image
 import pretrainedmodels as pm
 import pretrainedmodels.utils as pmutils
-from utils import *
-from config_dec import *
+from self_super_reconst.utils import *
+from self_super_reconst.config_dec import *
 from absl import app
-from utils.misc import set_gpu
+from self_super_reconst.utils.misc import set_gpu
 
 def main(argv):
     del argv
@@ -43,7 +43,7 @@ def main(argv):
     if FLAGS.is_rgbd:
         external_images = RGBD_Dataset(depth_only=FLAGS.is_rgbd==2)
     else:
-        external_images = ImageFolder('data/imagenet/val')
+        external_images = ImageFolder(PROJECT_ROOT + '/data/imagenet/val')
 
     #########################################
 
@@ -250,11 +250,8 @@ def main(argv):
                 if sum_writer:
                     if epoch % 50 == 0 or (epoch % 2 == 0 and epoch in range(10)):
                         domain = np.linspace(0, 1, 100)
-
                         sum_writer.add_figure('TrainDec/ImagesOutDist', hist_comparison_fig(stack2numpy(collected_images), domain), epoch)
-
                         create_reconst_summary(enc, dec, data_loaders_labeled, train_labeled, epoch, img_xfm_norm_inv, sum_writer, depth_extractor)
-
                     if epoch in [5, FLAGS.n_epochs - 1] or epoch % 50 == 0:
                         if isinstance(dec.module.input_fc, nn.Linear):
                             rf_params, n_out_planes = list(dec.module.input_fc.parameters()), dec.module.start_CHW[0]
@@ -321,7 +318,7 @@ def main(argv):
 
     cprint1(FLAGS.exp_prefix)
     print('\n' + '='*100 + '\n')
-    with open("runs/{}.txt".format(FLAGS.exp_prefix), "w") as f:
+    with open(f'{PROJECT_ROOT}/runs/{FLAGS.exp_prefix}.txt', 'w') as f:
         f.write(FLAGS.flags_into_string())
 
 def sample_pixels(imgs):

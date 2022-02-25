@@ -18,14 +18,14 @@ RELEASE_PATH=https://github.com/WeizmannVision/SelfSuperReconst/releases/downloa
 # 'fMRI on ImageNet' presented images at resolution of 112
 wget $RELEASE_PATH/images_112.npz
 
-# 'fMRI on ImageNet' presented images at resolution of 112 with their depth channel, 
+# 'fMRI on ImageNet' presented images at resolution of 112 with their depth channel,
 # which was computed on 224x224 images using MiDaS large model and saved as PNG uint8
 wget $RELEASE_PATH/rgbd_112_from_224_large_png_uint8.npz
 
 # 'fMRI on ImageNet' subject preprocessed fMRI data
 for sbj_num in 1 2 3 4 5
 do
-    wget $RELEASE_PATH/sbj_${sbj_num}.npz        
+    wget $RELEASE_PATH/sbj_${sbj_num}.npz
 done
 
 # MiDaS pretrained models for depth estimation from images
@@ -63,5 +63,8 @@ wget $RELEASE_PATH/vgg16_depth_only_norm_within_img_best.pth.tar
 wget $RELEASE_PATH/vgg16_rgbd_large_norm_within_img_best.pth.tar
 wget $RELEASE_PATH/vgg19_depth_only_large_norm_within_img_best.pth.tar
 wget $RELEASE_PATH/vgg19_rgbd_large_norm_within_img_best.pth.tar
-
 cd ..
+
+# Pretrained MiDaS depth estimation model checkpoints
+wget $RELEASE_PATH/model-f6b98070.pt
+wget $RELEASE_PATH/model-small-70d6b9c8.pt

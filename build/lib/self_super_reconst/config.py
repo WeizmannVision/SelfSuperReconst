@@ -9,7 +9,11 @@ __email__ = "guy.gaziv@weizmann.ac.il"
 
 import os, numpy as np
 from absl import flags
+import self_super_reconst
+from pathlib import Path
 FLAGS = flags.FLAGS
+
+PROJECT_ROOT = str(Path(self_super_reconst.__file__).parents[1])
 
 placeholder_str = '<PLACEHOLDER>'
 

@@ -3,11 +3,16 @@
 
 ***Official PyTorch implementation & pretrained models for:***
 > **More than Meets The Eye: Self-Supervised Depth Reconstruction from Brain Activity** \
-> *Guy Gaziv, Michal Irani*  [[`arXiv`](https://arxiv.org/abs/2106.05113)]
+> *Guy Gaziv, Michal Irani*
+
+<a href="https://arxiv.org/abs/2106.05113" target="_blank"><img src="https://img.shields.io/badge/arXiv-2106.05113-b31b1b.svg" height=22.5></a>
 
 > **Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity** \
 > *Guy Gaziv\*, Roman Beliy\*, Niv Granot\*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani*  \
-> [[`Project Page`](http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/) | [`arXiv`](https://arxiv.org/abs/2106.05113) | [`Summary Video`](https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550)]
+
+<a href="https://doi.org/10.1101/2020.09.06.284794" target="_blank"><img src="https://img.shields.io/badge/bioRxiv-10.1101/2020.09.06.284794-b31b1b.svg" height=22.5></a>
+<a href="http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/" target="_blank"><img src="https://img.shields.io/badge/-Project Page-yellowgreen.svg" height=22.5></a>
+<a href="https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550" target="_blank"><img src="https://img.shields.io/badge/-Summary Video-yellow.svg" height=22.5></a>
 
 <div align="center">
   <img width="100%" alt="Summary" src=".github/summary.gif">
@@ -21,19 +26,12 @@ Clone this repo and create a designated conda environment using the `env.yml` fi
 cd SelfSuperReconst
 conda env create --name <envname> --file=env.yml
 conda activate <envname>
+pip install -e .
 ```
 
-### Additional repo dependencies
-This repo uses two additional repos: (i) [MiDaS Monocular Depth Estimation](https://github.com/isl-org/MiDaS/releases/tag/v1), and (ii) [Perceptual Similarity Metric](https://github.com/richzhang/PerceptualSimilarity).
-Clone these repos and place under the parent folder of this repo. Imports to code from there are made accordingly.
-You can dismiss this step depending on your needs: (i) MiDaS is dynamically used to estimate depth from RGB data on-the-fly either as part of inference or reconstruction criterion (`midas_loss`) -- but not necessarily, depending on your decoder training configuration. (ii) lpips is used to evaluate RGB reconstructions.
-If any of these is not required just comment out imports/relevant code parts.
-
 ###  Data
-This code requires all necessary data to be placed/linked under `data` folder in the structure below. *For completeness and ease of demo only*, we provide these for **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
-**Please refer to the original datasets behind these derivatives alongside their proper citation ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).** \
-In addition, the original MiDaS depth estimation models ([model-f6b98070.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-f6b98070.pt)
-and [model-small-70d6b9c8.pt](https://github.com/intel-isl/MiDaS/releases/download/v2_1/model-small-70d6b9c8.pt)) should be downloaded from the [MiDaS original repo](https://github.com/isl-org/MiDaS/releases/tag/v1) and placed under `data`. \
+This code requires all necessary data to be placed/linked under `data` folder in the structure below. \
+*For completeness and ease of demo*, we release the data **download from [HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
 **For convenience the following script sets up all data automatically (takes some time to download):**
 ```
 cd SelfSuperReconst
@@ -42,7 +40,7 @@ cd SelfSuperReconst
 ```
 /data
 ┣ 📂 imagenet
-┃	┣ 📂 val 
+┃	┣ 📂 val
 ┃ 	┃	┗ (ImageNet validation images by original class folders)
 
 ┣ 📂 imagenet_depth
@@ -62,9 +60,11 @@ cd SelfSuperReconst
 
 ##
 ### Training
-The `scripts` folder provides most of the basic utility and experiments. In a nutshell, the training is comprised of two phases: (i) Encoder training implemented in `train_encoder.py`, followed by (ii) Decoder training, implemented in `train_decoder.py`. 
-Each of those scripts need be run with the relevant flags which are listed in config files. General flags for both Encoder & Decoder training are listed in `config.py`, and Encoder/Decoder-training specific flags in `config_enc.py` or `config_dec.py`, respectively. \
+The `scripts` folder provides most of the basic utility and experiments. In a nutshell, the training is comprised of two phases: (i) Encoder training implemented in `train_encoder.py`, followed by (ii) Decoder training, implemented in `train_decoder.py`.
+Each of those scripts need be run with the relevant flags which are listed in config files. General flags for both Encoder & Decoder training are listed in `config.py`, and Encoder/Decoder-training specific flags in `config_enc.py` or `config_dec.py`, respectively.
 Make sure to set the `tensorboard_log_dir` and `gpu` variables within the scripts.
+Note that decoder training assumes existence of a (pretrained) encoder checkpoint.
+We further provide general functionality tests to be used with `pytest`.
 
 #### Example 1 (RGB-only):
 Train RGB-only Encoder (supervised-only):
@@ -90,24 +90,28 @@ The results (reconstructions of train and test images) will appear under `result
 
 ##
 ### Evaluation
-The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper). 
-The DataFrame with evaluation results is saved under `eval_results` folder as a `.pkl` file. 
+The `eval.ipynb` notebook provides functionality for evaluating reconstruction quality via n-way identification experiments (two types: % correct or rank identification, see paper).
+The DataFrame with evaluation results is saved under `eval_results` folder as a `.pkl` file.
 The `eval_plot.ipynb` loads these data and implements some basic visualization and printing of results.
 
+##
+### Acknowledgments
+- This code borrows from [MiDaS Monocular Depth Estimation](https://github.com/isl-org/MiDaS/releases/tag/v1), and [Perceptual Similarity Metric](https://github.com/richzhang/PerceptualSimilarity).
+- The original datasets behind the released data derivatives are ([fMRI on ImageNet](https://openneuro.org/datasets/ds001246/versions/1.0.1), and [ILSVRC](https://image-net.org/challenges/LSVRC/index.php)).
 ##
 ### Citation
 If you find this repository useful, please consider giving a star ⭐️ and citation:
 ```
-@article{Gaziv2021MoreActivity, 
-	title = {{More than Meets The Eye: Self-Supervised Depth Reconstruction from Brain Activity}}, 
-	author = {Gaziv, Guy and Irani, Michal}, 
-	journal={arXiv preprint arXiv:2106.05113},	
+@article{Gaziv2021MoreActivity,
+	title = {{More than Meets The Eye: Self-Supervised Depth Reconstruction from Brain Activity}},
+	author = {Gaziv, Guy and Irani, Michal},
+	journal={arXiv preprint arXiv:2106.05113},
 	year = {2021}
 }
 
-@article{Gaziv2020, 
-	title = {{Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity}}, 
-	author = {Gaziv, Guy and Beliy, Roman and Granot, Niv and Hoogi, Assaf and Strappini, Francesca and Golan, Tal and Irani, Michal}, 
+@article{Gaziv2020,
+	title = {{Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity}},
+	author = {Gaziv, Guy and Beliy, Roman and Granot, Niv and Hoogi, Assaf and Strappini, Francesca and Golan, Tal and Irani, Michal},
 	journal = {bioRxiv},
 	year = {2020}
 }

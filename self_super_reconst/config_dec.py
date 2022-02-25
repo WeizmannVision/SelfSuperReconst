@@ -7,7 +7,7 @@
 __author__ = "Guy Gaziv"
 __email__ = "guy.gaziv@weizmann.ac.il"
 
-from config import *
+from self_super_reconst.config import *
 
 flags.DEFINE_string("tensorboard_log_dir", '/mnt/tmpfs/guyga/ssfmri2im/dec', "Log dir.")
 
@@ -20,7 +20,7 @@ flags.DEFINE_string('enc_cpt_name', '', 'Encoder checkpoint name to load')
 
 flags.DEFINE_string('enc_bbn_arch_name', 'alexnet', '')
 
-flags.DEFINE_list("batch_size_list", [24, 16, 16, 64], "Supervised training | unlabeled fMRI | unlabeled images | test") 
+flags.DEFINE_list("batch_size_list", [24, 16, 16, 64], "Supervised training | unlabeled fMRI | unlabeled images | test")
 batch_size_list = lambda : [int(x) for x in FLAGS.batch_size_list]
 
 flags.DEFINE_list("loss_weights", [1, 1, 1], "Loss weights [loss_D, loss_ED, loss_DE]")
@@ -76,7 +76,7 @@ flags.DEFINE_integer("depth_dec", 0, 'Force depth only decoder')
 flags.DEFINE_string("midas_type", 'small', '')
 
 exp_folder = lambda : os.path.join('results', FLAGS.exp_prefix)
-enc_cpt_path = lambda : 'checkpoints/{}.pth.tar'.format(FLAGS.enc_cpt_name)
+enc_cpt_path = lambda : f'{PROJECT_ROOT}/checkpoints/{FLAGS.enc_cpt_name}.pth.tar'
 
 if __name__ == '__main__':
     pass

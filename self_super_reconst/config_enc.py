@@ -7,7 +7,7 @@
 __author__ = "Guy Gaziv"
 __email__ = "guy.gaziv@weizmann.ac.il"
 
-from config import *
+from self_super_reconst.config import *
 
 flags.DEFINE_string("tensorboard_log_dir", '/mnt/tmpfs/guyga/SelfSuperReconst/enc', "Log dir.")
 flags.DEFINE_enum("roi", 'VC', ['V1', 'V2', 'V3', 'V4', 'FFA', 'PPA', 'LOC', 'LVC', 'HVC', 'VC'], '')

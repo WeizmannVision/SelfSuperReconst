@@ -6,6 +6,9 @@
 */__pycache__
 .vscode
 .ipynb_checkpoints
+*.egg-info
 results/*
 runs/*
 checkpoints/*
+self_super_reconst/lpips/weights/
+data/*
