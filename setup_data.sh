@@ -68,3 +68,5 @@ cd ..
 # Pretrained MiDaS depth estimation model checkpoints
 wget $RELEASE_PATH/model-f6b98070.pt
 wget $RELEASE_PATH/model-small-70d6b9c8.pt
+
+cd ..
