@@ -12,3 +12,4 @@ runs/*
 checkpoints/*
 self_super_reconst/lpips/weights/
 data/*
+build
