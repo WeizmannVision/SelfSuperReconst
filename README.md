@@ -32,7 +32,7 @@ pip install -e .
 ###  Data
 This code requires all necessary data to be placed/linked under `data` folder in the structure below. \
 *For completeness and ease of demo*, we release the data for download **[HERE](https://github.com/WeizmannVision/SelfSuperReconst/releases).** \
-**For convenience the following script sets up all data automatically (takes some time to download):**
+**The following convenience script sets up all data automatically.**
 ```
 cd SelfSuperReconst
 ./setup_data.sh
