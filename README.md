@@ -8,7 +8,7 @@
 <a href="https://arxiv.org/abs/2106.05113" target="_blank"><img src="https://img.shields.io/badge/arXiv-2106.05113-b31b1b.svg" height=22.5></a>
 
 > **Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity** \
-> *Guy Gaziv\*, Roman Beliy\*, Niv Granot\*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani*  \
+> *Guy Gaziv\*, Roman Beliy\*, Niv Granot\*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani*  
 
 <a href="https://doi.org/10.1101/2020.09.06.284794" target="_blank"><img src="https://img.shields.io/badge/bioRxiv-10.1101/2020.09.06.284794-b31b1b.svg" height=22.5></a>
 <a href="http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/" target="_blank"><img src="https://img.shields.io/badge/-Project Page-yellowgreen.svg" height=22.5></a>
