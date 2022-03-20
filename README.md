@@ -5,12 +5,12 @@
 > **More than Meets The Eye: Self-Supervised Depth Reconstruction from Brain Activity** \
 > *Guy Gaziv, Michal Irani*
 
-<a href="https://arxiv.org/abs/2106.05113" target="_blank"><img src="https://img.shields.io/badge/arXiv-2106.05113-b31b1b.svg" height=22.5></a>
+<a href="https://arxiv.org/abs/2106.05113" target="_blank"><img src="https://img.shields.io/badge/arXiv-preprint-b31b1b.svg" height=22.5></a>
 
 > **Self-Supervised Natural Image Reconstruction and Rich Semantic Classification from Brain Activity** \
 > *Guy Gaziv\*, Roman Beliy\*, Niv Granot\*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani*  
 
-<a href="https://doi.org/10.1101/2020.09.06.284794" target="_blank"><img src="https://img.shields.io/badge/bioRxiv-10.1101/2020.09.06.284794-b31b1b.svg" height=22.5></a>
+<a href="https://doi.org/10.1101/2020.09.06.284794" target="_blank"><img src="https://img.shields.io/badge/bioRxiv-preprint-b31b1b.svg" height=22.5></a>
 <a href="http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/" target="_blank"><img src="https://img.shields.io/badge/-Project Page-yellowgreen.svg" height=22.5></a>
 <a href="https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550" target="_blank"><img src="https://img.shields.io/badge/-Summary Video-yellow.svg" height=22.5></a>
 
