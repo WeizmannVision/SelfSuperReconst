@@ -1,5 +1,5 @@
 
-# Self-Supervised RGBD Reconstruction from Brain Activity 🧠
+# Self-Supervised RGBD Reconstruction From Brain Activity 🧠
 
 ***Official PyTorch implementation & pretrained models for:***
 > **More Than Meets the Eye: Self-Supervised Depth Reconstruction From Brain Activity** \
