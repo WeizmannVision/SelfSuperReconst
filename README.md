@@ -10,7 +10,7 @@
 > **Self-Supervised Natural Image Reconstruction and Large-Scale Semantic Classification From Brain Activity** \
 > *Guy Gaziv\*, Roman Beliy\*, Niv Granot\*, Assaf Hoogi, Francesca Strappini, Tal Golan, Michal Irani*  
 
-<a href="https://doi.org/10.1101/2020.09.06.284794" target="_blank"><img src="https://img.shields.io/badge/bioRxiv-preprint-b31b1b.svg" height=22.5></a>
+<a href="https://doi.org/10.1016/j.neuroimage.2022.119121" target="_blank"><img src="https://img.shields.io/badge/NeuroImage-paper-b31b1b.svg" height=22.5></a>
 <a href="http://www.wisdom.weizmann.ac.il/~vision/SSReconstnClass/" target="_blank"><img src="https://img.shields.io/badge/-Project Page-yellowgreen.svg" height=22.5></a>
 <a href="https://video.tau.ac.il/events/index.php?option=com_k2&view=item&id=10112:fmri&Itemid=550" target="_blank"><img src="https://img.shields.io/badge/-Summary Video-yellow.svg" height=22.5></a>
 
@@ -109,10 +109,11 @@ If you find this repository useful, please consider giving a star ⭐️ and cit
 	year = {2021}
 }
 
-@article{Gaziv2020,
-	title = {{Self-Supervised Natural Image Reconstruction and Large-Scale Semantic Classification From Brain Activity}},
+@article{Gaziv2022,
+	title = {{Self-Supervised Natural Image Reconstruction and Large-Scale Semantic Classification from Brain Activity}},
 	author = {Gaziv, Guy and Beliy, Roman and Granot, Niv and Hoogi, Assaf and Strappini, Francesca and Golan, Tal and Irani, Michal},
-	journal = {bioRxiv},
-	year = {2020}
+	journal = {NeuroImage},
+	doi = {10.1016/J.NEUROIMAGE.2022.119121},
+	year = {2022}
 }
 ```
